@@ -76,9 +76,6 @@ def fn_filter(names, pat):
     return tuple(filter(match, names))
 
 
-class SeeError(Exception): pass
-
-
 class _SeeOutput(tuple):
     """Tuple-like object with a pretty string representation."""
 
@@ -134,21 +131,13 @@ def see(obj=_LOCALS, pattern=None, r=None):
         in      implements membership tests (e.g. x in obj)
         +obj    unary positive operator (e.g. +2)
         -obj    unary negative operator (e.g. -2)
-        ?       raised an exception
 
     """
     use_locals = obj is _LOCALS
     actions = []
     dot = not use_locals and '.' or ''
-    name = lambda a, f: ''.join((dot, a, suffix(f)))
-
-    def suffix(f):
-        if isinstance(f, SeeError):
-            return '?'
-        elif hasattr(f, '__call__'):
-            return '()'
-        else:
-            return ''
+    func = lambda f: hasattr(f, '__call__') and '()' or ''
+    name = lambda a, f: ''.join((dot, a, func(f)))
 
     if use_locals:
         obj.__dict__ = inspect.currentframe().f_back.f_locals
@@ -165,8 +154,8 @@ def see(obj=_LOCALS, pattern=None, r=None):
     for attr in filter(lambda a: not a.startswith('_'), attrs):
         try:
             prop = getattr(obj, attr)
-        except (AttributeError, Exception):
-            prop = SeeError()
+        except AttributeError:
+            continue
         actions.append(name(attr, prop))
 
     if pattern is not None:
