@@ -34,7 +34,6 @@ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 
 """
-import fcntl
 import fnmatch
 import inspect
 import re
@@ -43,15 +42,17 @@ import sys
 import textwrap
 
 try:
+    import fcntl
     import termios
 except ImportError:
+    fcntl = None
     termios = None
 
 __all__ = ['see']
 
 __author__ = 'Liam Cooke'
 __contributors__ = 'See AUTHORS.md'
-__version__ = '1.1.0'
+__version__ = '1.1.1'
 __copyright__ = 'Copyright (c) 2009-2015 Liam Cooke'
 __license__ = 'BSD License'
 
@@ -61,7 +62,7 @@ def term_width():
     Return the column width of the terminal, or None if it can't be determined.
 
     """
-    if termios:
+    if fcntl and termios:
         try:
             winsize = fcntl.ioctl(0, termios.TIOCGWINSZ, '    ')
             _, width = struct.unpack('hh', winsize)

@@ -3,14 +3,14 @@
 from distutils.core import setup
 
 setup( name='see',
-       version='1.1.0',
+       version='1.1.1',
        description='A human-readable alternative to dir',
        author='Liam Cooke',
        author_email='hi@liamcooke.com',
        url='http://inky.github.io/see/',
        py_modules=['see'],
        classifiers=[
-           'Development Status :: 4 - Beta',
+           'Development Status :: 5 - Production/Stable',
            'Environment :: Console',
            'Intended Audience :: Developers',
            'License :: Freely Distributable',
